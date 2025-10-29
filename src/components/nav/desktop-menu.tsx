@@ -33,13 +33,17 @@ import { useAuth } from "@/components/auth/auth-provider";
 
 export default function DesktopMenu() {
   const { user } = useAuth();
+  const displayName =
+    user?.primaryEmailAddress?.emailAddress?.split("@")[0] ??
+    user?.username ??
+    "사용자";
 
   return (
     <div className="hidden md:flex items-center gap-4">
       {user && (
         <div className="text-sm mr-2">
           <span className="hidden md:inline">환영합니다, </span>
-          <span className="font-medium">{user.email?.split("@")[0]}</span>님
+          <span className="font-medium">{displayName}</span>님
         </div>
       )}
 

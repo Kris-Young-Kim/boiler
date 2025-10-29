@@ -27,6 +27,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 interface ProductCardProps {
   product: Product;
@@ -44,10 +45,12 @@ export function ProductCard({ product }: ProductCardProps) {
       <CardHeader>
         {product.image_url && (
           <div className="aspect-square relative mb-4 overflow-hidden rounded-lg bg-gray-100">
-            <img
+            <Image
               src={product.image_url}
               alt={product.name}
-              className="object-cover w-full h-full"
+              fill
+              sizes="(min-width: 768px) 25vw, 100vw"
+              className="object-cover"
             />
           </div>
         )}
@@ -69,4 +72,3 @@ export function ProductCard({ product }: ProductCardProps) {
     </Card>
   );
 }
-

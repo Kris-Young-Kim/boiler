@@ -24,7 +24,11 @@
  */
 
 import { z } from "zod";
-import { isPasswordValid } from "@/components/auth/password-requirements";
+
+const PASSWORD_PATTERN =
+  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()[\]{}:;,.?/~_+\-=|<>`"']).{6,}$/;
+
+const isPasswordValid = (value: string) => PASSWORD_PATTERN.test(value);
 
 // 로그인 폼 스키마
 export const loginSchema = z.object({

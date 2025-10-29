@@ -35,13 +35,16 @@ const isPublicRoute = createRouteMatcher([
   "/login(.*)",
   "/sign-up(.*)",
   "/api/webhooks(.*)",
-  "/products(.*)",      // 상품 목록
-  "/checkout(.*)",      // 결제 주문서
-  "/payment(.*)",       // 결제 성공/실패
+  "/products(.*)", // 상품 목록
+  "/checkout(.*)", // 결제 주문서
+  "/payment(.*)", // 결제 성공/실패
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
-  // 보호된 경로에 대한 인증 강제
+  if (isPublicRoute(req)) {
+    return;
+  }
+
   if (isProtectedRoute(req)) {
     await auth.protect();
   }
