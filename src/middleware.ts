@@ -21,6 +21,7 @@
  */
 
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
 // 인증이 필요한 보호된 경로 정의
 const isProtectedRoute = createRouteMatcher([
@@ -42,12 +43,14 @@ const isPublicRoute = createRouteMatcher([
 
 export default clerkMiddleware(async (auth, req) => {
   if (isPublicRoute(req)) {
-    return;
+    return NextResponse.next();
   }
 
   if (isProtectedRoute(req)) {
     await auth.protect();
   }
+
+  return NextResponse.next();
 });
 
 export const config = {
