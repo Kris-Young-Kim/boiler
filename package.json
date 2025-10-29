@@ -12,7 +12,6 @@
     "supabase:link": "supabase link --project-ref $SUPABASE_PROJECT_ID",
     "supabase:types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > src/types/database.types.ts",
     "dev:setup": "pnpm supabase:login && pnpm supabase:link && pnpm supabase:types && pnpm dev",
-    "prepare": "husky install",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -94,7 +93,6 @@
     "eslint-config-next": "15.3.2",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "husky": "^8.0.0",
     "jsdom": "^26.1.0",
     "lint-staged": "^15.5.2",
     "prettier": "^3.5.3",
