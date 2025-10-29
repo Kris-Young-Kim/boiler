@@ -23,13 +23,12 @@
 
 "use server";
 
-import { createServerSupabaseClient } from "@/utils/supabase/server";
-import { confirmPayment, cancelPayment } from "@/utils/tosspayments/server";
 import {
-  PaymentConfirmResult,
-  TemporaryOrder,
-  Payment,
-} from "@/types/payment";
+  createServerSupabaseClient,
+  createServerSupabaseAdminClient,
+} from "@/utils/supabase/server";
+import { confirmPayment, cancelPayment } from "@/utils/tosspayments/server";
+import { PaymentConfirmResult, TemporaryOrder, Payment } from "@/types/payment";
 
 /**
  * 임시 주문 생성 (결제 요청 전 데이터 저장)
@@ -37,13 +36,15 @@ import {
  * @returns 성공 여부
  */
 export async function createTemporaryOrder(
-  order: TemporaryOrder
+  order: TemporaryOrder,
 ): Promise<{ success: boolean; error?: string }> {
   console.group("📝 임시 주문 생성");
   console.log("주문 정보:", order);
 
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = process.env.SUPABASE_SERVICE_ROLE
+      ? await createServerSupabaseAdminClient()
+      : await createServerSupabaseClient();
 
     // 상품 존재 여부 확인
     const { data: product, error: productError } = await supabase
@@ -108,7 +109,7 @@ export async function createTemporaryOrder(
 export async function confirmPaymentAction(
   paymentKey: string,
   orderId: string,
-  amount: number
+  amount: number,
 ): Promise<PaymentConfirmResult> {
   console.group("💳 결제 승인 처리");
   console.log("결제 키:", paymentKey);
@@ -116,7 +117,9 @@ export async function confirmPaymentAction(
   console.log("금액:", amount);
 
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = process.env.SUPABASE_SERVICE_ROLE
+      ? await createServerSupabaseAdminClient()
+      : await createServerSupabaseClient();
 
     // 임시 주문 조회
     const { data: tempPayment, error: tempError } = await supabase
@@ -201,14 +204,16 @@ export async function confirmPaymentAction(
  */
 export async function cancelPaymentAction(
   paymentKey: string,
-  cancelReason: string
+  cancelReason: string,
 ): Promise<{ success: boolean; error?: string }> {
   console.group("🔙 결제 취소 처리");
   console.log("결제 키:", paymentKey);
   console.log("취소 사유:", cancelReason);
 
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = process.env.SUPABASE_SERVICE_ROLE
+      ? await createServerSupabaseAdminClient()
+      : await createServerSupabaseClient();
 
     // 결제 정보 조회
     const { data: payment, error: paymentError } = await supabase
@@ -274,13 +279,15 @@ export async function cancelPaymentAction(
  * @returns 결제 내역 목록
  */
 export async function getPaymentHistory(
-  userId?: string
+  userId?: string,
 ): Promise<{ success: boolean; payments?: Payment[]; error?: string }> {
   console.group("📋 결제 내역 조회");
   console.log("사용자 ID:", userId || "비회원");
 
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = process.env.SUPABASE_SERVICE_ROLE
+      ? await createServerSupabaseAdminClient()
+      : await createServerSupabaseClient();
 
     let query = supabase
       .from("payments")
@@ -313,4 +320,3 @@ export async function getPaymentHistory(
     };
   }
 }
-
